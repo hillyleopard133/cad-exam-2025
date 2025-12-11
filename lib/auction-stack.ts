@@ -59,6 +59,10 @@ export class AuctionStack extends cdk.Stack {
       },
     });
 
+    const bidQueue = new sqs.Queue(this, "BidQueue", {
+      receiveMessageWaitTime: cdk.Duration.seconds(5),
+    });
+
     const topic = new sns.Topic(this, "AuctionTopic", {
       displayName: "New Image topic",
     });
@@ -92,6 +96,7 @@ export class AuctionStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(15),
       memorySize: 128,
       environment: {
+        TABLE_NAME: bids.tableName,
         REGION: "eu-west-1",
       },
     });
@@ -109,6 +114,12 @@ export class AuctionStack extends cdk.Stack {
       })
     );
 
+    topic.addSubscription(
+      new subs.SqsSubscription(bidQueue, {
+        rawMessageDelivery: true,
+      })
+    );
+
     lambdaA.addEventSource(
       new events.SqsEventSource(queue, {
         batchSize: 5,
@@ -123,10 +134,18 @@ export class AuctionStack extends cdk.Stack {
       })
     );
 
+    lambdaC.addEventSource(
+      new events.SqsEventSource(bidQueue, {
+        batchSize: 5,
+        maxBatchingWindow: cdk.Duration.seconds(5),
+      })
+    );
+
 
     // Permissions
 
     auctioStock.grantReadWriteData(lambdaA);
+    bids.grantReadWriteData(lambdaC);
     
     // Output
 
