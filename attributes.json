@@ -1,0 +1,6 @@
+{  
+    "auction_type": {
+        "DataType": "String",
+        "StringValue": "Public"
+ }
+}

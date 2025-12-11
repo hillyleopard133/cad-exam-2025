@@ -14,9 +14,9 @@ export type AuctionItem = {
   
   export type  Bid = {
     bidId: string;
-    custemorName: string;
+    customorName: string;
     detail: {
-      itenId: string;
+      itemId: string;
       bidValue: number;
     }
   };
