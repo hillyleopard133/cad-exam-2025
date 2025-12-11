@@ -1,6 +1,6 @@
 {
     "bidId": 100,
-    "customorName": "Joe Bloggs",
+    "customerName": "Joe Bloggs",
     "detail": {
       "itemId": "Lot5",
       "bidValue": 500
