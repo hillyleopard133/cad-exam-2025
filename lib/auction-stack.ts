@@ -117,6 +117,11 @@ export class AuctionStack extends cdk.Stack {
     topic.addSubscription(
       new subs.SqsSubscription(bidQueue, {
         rawMessageDelivery: true,
+        filterPolicy: {
+          message_type: sns.SubscriptionFilter.stringFilter({
+            allowlist: ["Bid"],
+          }),
+        },
       })
     );
 
