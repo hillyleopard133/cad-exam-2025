@@ -20,6 +20,13 @@ export const handler: SQSHandler = async (event) => {
       ...auctionItem,
       auctionType: auctionTypeAttribute as "Public" | "Private" | "Online",  // Hardcoded for now.
     }
+
+    if (auctionItem.marketValue < auctionItem.minimumPrice) {
+      throw new Error(
+        "Stock item marketvalue is less than minimum price"
+      );
+    }
+
     await ddbDocClient.send(
       new PutCommand({
         TableName: process.env.TABLE_NAME,
